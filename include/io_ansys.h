@@ -1080,8 +1080,6 @@ namespace semo {
                 file << "End of Binary Section   3012)\n";
             }
             file << "\n";
-            //file << "(45 (" << "2 fluid unspecified" << ")())\n";
-
 
 
 
@@ -1096,9 +1094,6 @@ namespace semo {
             //    ("pyramid", 5),
             //    ("wedge", 6),
             //}
-
-
-
 
             if (is_binary == false) {
 
@@ -1221,12 +1216,26 @@ namespace semo {
             }
             file << "\n";
 
-            //file << "(45 (" << "3 interior interior - unspecified" << ")())\n";
+            // 바운더리
+            //file << "(45 (" << "4 wall unspecified" << ")())\n";
+            auto& bc_names = *bc_names_p;
+            for (int ibc = 0; ibc < bc_startFace.size(); ++ibc) {
+                auto startFace = bc_startFace[ibc];
+                auto nFaces = bc_nFaces[ibc];
+                file << "(45 (" <<
+                    std::hex << ibc + 4 << " " <<
+                    std::hex << "wall" << " " <<
+                    std::hex << bc_names[ibc];
+                file << ")())\n\n";
+            }
+
+
 
             //file << "(13 (" << "4 91 f0 3 4" << ")(\n";
             //file << "\n";
             //file << "))\n";
-            //file << "(45 (" << "4 wall unspecified" << ")())\n";
+
+
 
 
         }
