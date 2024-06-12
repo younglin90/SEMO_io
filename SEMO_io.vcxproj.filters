@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\helper.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="include\io_abaqus.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -57,7 +54,7 @@
     <ClInclude Include="include\io_vtu.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="include\semo_io.h">
+    <ClInclude Include="include\mesh_io.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

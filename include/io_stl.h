@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common.h"
 #include "helper.h"
 
 namespace semo {
@@ -7,13 +8,13 @@ namespace semo {
 	class Loader_stl {
 	public:
 
-        std::vector<std::array<double, 3>>* pos_p = nullptr;
-        std::vector<std::vector<size_t>>* f2v_p = nullptr;
+        std::vector<semo::point3_t>* pos_p = nullptr;
+        std::vector<std::vector<semo::index_t>>* f2v_p = nullptr;
 
-        void set_pos(std::vector<std::array<double, 3>>* pos_p_in) {
+        void set_pos(std::vector<semo::point3_t>* pos_p_in) {
             pos_p = pos_p_in;
         }
-        void set_f2v(std::vector<std::vector<size_t>>* f2v_p_in) {
+        void set_f2v(std::vector<std::vector<semo::index_t>>* f2v_p_in) {
             f2v_p = f2v_p_in;
         }
 
@@ -80,19 +81,22 @@ namespace semo {
                         //mesh.get_last_face().set_normal(x_temp, y_temp, z_temp);
 
                         file >> s0 >> x_temp >> y_temp >> z_temp;
-                        pos.push_back({ x_temp, y_temp, z_temp });
+                        semo::point3_t pos_tmp = { x_temp, y_temp, z_temp };
+                        pos.push_back(pos_tmp);
                         f2v.back().push_back(pos.size() - 1);
                         //x_avg += x_temp; y_avg += y_temp; z_avg += z_temp;
                         //mesh.connect_face_to_point(mesh.get_index_of_last_face(), mesh.get_last_point_index());
 
                         file >> s0 >> x_temp >> y_temp >> z_temp;
-                        pos.push_back({ x_temp, y_temp, z_temp });
+                        pos_tmp = { x_temp, y_temp, z_temp };
+                        pos.push_back(pos_tmp);
                         f2v.back().push_back(pos.size() - 1);
                         //x_avg += x_temp; y_avg += y_temp; z_avg += z_temp;
                         //mesh.connect_face_to_point(mesh.get_index_of_last_face(), mesh.get_last_point_index());
 
                         file >> s0 >> x_temp >> y_temp >> z_temp;
-                        pos.push_back({ x_temp, y_temp, z_temp });
+                        pos_tmp = { x_temp, y_temp, z_temp };
+                        pos.push_back(pos_tmp);
                         f2v.back().push_back(pos.size() - 1);
                         //x_avg += x_temp; y_avg += y_temp; z_avg += z_temp;
                         //mesh.connect_face_to_point(mesh.get_index_of_last_face(), mesh.get_last_point_index());
@@ -143,11 +147,14 @@ namespace semo {
                         vertex2[i] = static_cast<double>(vertex2_t[i]);
                         vertex3[i] = static_cast<double>(vertex3_t[i]);
                     }
-                    pos.push_back({ vertex1[0], vertex1[1], vertex1[2] });
+                    semo::point3_t pos_tmp = { vertex1[0], vertex1[1], vertex1[2] };
+                    pos.push_back(pos_tmp);
                     f2v.back().push_back(pos.size() - 1);
-                    pos.push_back({ vertex2[0], vertex2[1], vertex2[2] });
+                    pos_tmp = { vertex2[0], vertex2[1], vertex2[2] };
+                    pos.push_back(pos_tmp);
                     f2v.back().push_back(pos.size() - 1);
-                    pos.push_back({ vertex3[0], vertex3[1], vertex3[2] });
+                    pos_tmp = { vertex3[0], vertex3[1], vertex3[2] };
+                    pos.push_back(pos_tmp);
                     f2v.back().push_back(pos.size() - 1);
                     
                     //T x_avg = (vertex1[0] + vertex2[0] + vertex3[0]) / 3.0;
@@ -164,6 +171,43 @@ namespace semo {
             // 파일 읽기 완료
 
 
+            // 포인트 중복 삭제 및 f2v 정리
+            pos_f2v_rearange();
+
+
+        }
+
+        void pos_f2v_rearange() {
+
+            auto& pos = *pos_p;
+            auto& f2v = *f2v_p;
+
+
+#ifdef SEMO_USE_EIGEN_LIB
+            std::vector<std::array<double, 3>> pos_tmp;
+            pos_tmp.reserve(pos.size());
+            for (auto& p : pos) {
+                pos_tmp.push_back({p[0],p[1],p[2]});
+            }
+            auto indices = semo::sort_and_unique_indices(pos_tmp);
+            pos.clear();
+            pos.reserve(pos_tmp.size());
+            for (auto& p : pos_tmp) {
+                semo::point3_t pos_tmp = { p[0], p[1], p[2] };
+                pos.push_back(pos_tmp);
+            }
+#else
+            auto indices = semo::sort_and_unique_indices(pos);
+#endif
+
+            // face to point connectivity를 새로운 인덱스로 바꾸기
+            for (auto& ivs : f2v) {
+                std::vector<std::size_t> new_points;
+                for (const auto& iv : ivs) {
+                    new_points.push_back(indices[iv]);
+                }
+                ivs = std::move(new_points);
+            }
 
         }
 
@@ -180,10 +224,10 @@ namespace semo {
 	public:
 
 
-        std::vector<std::array<double, 3>>* pos_p;
+        std::vector<semo::point3_t>* pos_p;
         std::vector<std::vector<size_t>>* f2v_p;
 
-        void set_pos(std::vector<std::array<double, 3>>* pos_p_in) {
+        void set_pos(std::vector<semo::point3_t>* pos_p_in) {
             pos_p = pos_p_in;
         }
         void set_f2v(std::vector<std::vector<size_t>>* f2v_p_in) {
@@ -212,6 +256,7 @@ namespace semo {
             fh << "solid\n";
             for (size_t i = 0; i < f2v.size(); ++i) {
                 const auto& ivs = f2v[i];
+                assert(ivs.size() == 3);
                 //fh << "facet normal " << normal.x() << " " << normal.y() << " " << normal.z() << "\n";
                 fh << "facet normal " << 0.0 << " " << 0.0 << " " << 0.0 << "\n";
                 fh << " outer loop\n";
@@ -239,16 +284,22 @@ namespace semo {
             auto& pos = *pos_p;
             auto& f2v = *f2v_p;
 
-            uint32_t num_triangles = f2v.size();
+            uint32_t num_triangles = static_cast<uint32_t>(f2v.size());
             fh.write(reinterpret_cast<const char*>(&num_triangles), sizeof(uint32_t));
 
             for (size_t i = 0; i < f2v.size(); ++i) {
+                const auto& ivs = f2v[i];
                 std::array<float, 3> normal = { 0.0, 0.0, 0.0 };
                 fh.write(reinterpret_cast<const char*>(normal.data()), 3 * sizeof(float));
 
-                for (const auto& iv : f2v[i]) {
+                assert(ivs.size() == 3);
+
+                for (const auto& iv : ivs) {
                     auto& loc_pos = pos[iv];
-                    std::array<float, 3 > posf = { loc_pos[0], loc_pos[1], loc_pos[2] };
+                    std::array<float, 3 > posf = { 
+                        static_cast<float>(loc_pos[0]), 
+                        static_cast<float>(loc_pos[1]),
+                        static_cast<float>(loc_pos[2]) };
                     fh.write(reinterpret_cast<const char*>(posf.data()), 3 * sizeof(float));
                 }
 

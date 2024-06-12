@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common.h"
 #include "helper.h"
 
 namespace semo {
@@ -7,10 +8,10 @@ namespace semo {
 	class Loader_off {
 	public:
 
-        std::vector<std::array<double, 3>>* pos_p{};
+        std::vector<semo::point3_t>* pos_p{};
         std::vector<std::vector<size_t>>* f2v_p{};
 
-        void set_pos(std::vector<std::array<double, 3>>* pos_p_in) {
+        void set_pos(std::vector<semo::point3_t>* pos_p_in) {
             pos_p = pos_p_in;
         }
         void set_f2v(std::vector<std::vector<size_t>>* f2v_p_in) {
@@ -47,9 +48,11 @@ namespace semo {
             std::string line;
             // 첫 번째 줄이 'OFF'인지 확인
             std::getline(file, line);
+            //std::cout << semo::trim(line) << "adsf" << std::endl;
             if (semo::trim(line) != "OFF") {
                 std::cout << "Expected the first line to be `OFF`." << std::endl;
                 std::cout << line << std::endl;
+                std::cout << semo::trim(line) << "adsf" << std::endl;
                 throw std::runtime_error("Expected the first line to be `OFF`.");
             }
 
@@ -102,10 +105,10 @@ namespace semo {
 	class Saver_off {
 	public:
 
-        std::vector<std::array<double, 3>>* pos_p{};
+        std::vector<semo::point3_t>* pos_p{};
         std::vector<std::vector<size_t>>* f2v_p{};
 
-        void set_pos(std::vector<std::array<double, 3>>* pos_p_in) {
+        void set_pos(std::vector<semo::point3_t>* pos_p_in) {
             pos_p = pos_p_in;
         }
         void set_f2v(std::vector<std::vector<size_t>>* f2v_p_in) {

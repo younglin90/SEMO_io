@@ -1,15 +1,15 @@
 #pragma once
 
-#include "helper.h"
+#include "common.h"
 
 namespace semo {
 
     class Loader_obj {
     public:
-        std::vector<std::array<double, 3>>* pos_p = nullptr;
+        std::vector<semo::point3_t>* pos_p = nullptr;
         std::vector<std::vector<size_t>>* f2v_p = nullptr;
 
-        void set_pos(std::vector<std::array<double, 3>>* pos_p_in) {
+        void set_pos(std::vector<semo::point3_t>* pos_p_in) {
             pos_p = pos_p_in;
         }
         void set_f2v(std::vector<std::vector<size_t>>* f2v_p_in) {
@@ -38,7 +38,7 @@ namespace semo {
             // 파일 경로 지정
             std::ifstream file(filename, std::ios::in);
             if (!file) {
-                std::runtime_error;
+                throw std::runtime_error("");
             }
 
             // 파일 읽기
@@ -77,10 +77,10 @@ namespace semo {
 
     class Saver_obj {
     public:
-        std::vector<std::array<double, 3>>* pos_p = nullptr;
+        std::vector<semo::point3_t>* pos_p = nullptr;
         std::vector<std::vector<size_t>>* f2v_p = nullptr;
 
-        void set_pos(std::vector<std::array<double, 3>>* pos_p_in) {
+        void set_pos(std::vector<semo::point3_t>* pos_p_in) {
             pos_p = pos_p_in;
         }
         void set_f2v(std::vector<std::vector<size_t>>* f2v_p_in) {
@@ -113,6 +113,7 @@ namespace semo {
             }
 
             for (const auto& f : f2v) {
+                assert(f.size() == 3);
                 file << "f " << f[0] + 1 << " " << f[1] + 1 << " " << f[2] + 1 << "\n";
             }
 

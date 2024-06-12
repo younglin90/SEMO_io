@@ -1,15 +1,15 @@
 #pragma once
 
-#include "helper.h"
+#include "common.h"
 
 namespace semo {
 
     class Loader_openfoam {
     public:
 
-		std::vector<std::array<double, 3>>* pos_p{};
+		std::vector<semo::point3_t>* pos_p{};
 		std::vector<std::vector<size_t>>* f2v_p{};
-		std::vector<std::vector<size_t>>* f2c_p{};
+		std::vector<std::array<size_t, 2>>* f2c_p{};
 
 		std::vector<std::string>* bc_names_p{};
 		std::vector<std::size_t>* bc_nFaces_p{};
@@ -17,13 +17,13 @@ namespace semo {
 		std::vector<std::size_t>* bc_myProcNo_p{};
 		std::vector<std::size_t>* bc_rightProcNo_p{};
 
-		void set_pos(std::vector<std::array<double, 3>>* pos_p_in) {
+		void set_pos(std::vector<semo::point3_t>* pos_p_in) {
 			pos_p = pos_p_in;
 		}
 		void set_f2v(std::vector<std::vector<size_t>>* f2v_p_in) {
 			f2v_p = f2v_p_in;
 		}
-		void set_f2c(std::vector<std::vector<size_t>>* f2c_p_in) {
+		void set_f2c(std::vector<std::array<size_t, 2>>* f2c_p_in) {
 			f2c_p = f2c_p_in;
 		}
 		void set_bc_names(std::vector<std::string>* bc_names_in) {
@@ -113,7 +113,7 @@ namespace semo {
 						break;
 					}
 					else {
-						std::array<double, 3> xyz{};
+						semo::point3_t xyz{};
 						line.erase(line.find("("), 1);
 						line.erase(line.find(")"), 1);
 						std::stringstream sstream(line);
@@ -203,7 +203,7 @@ namespace semo {
 			}
 			int temp_num = 0;
 			startInput = false;
-			f2c.resize(num_faces);
+			f2c.resize(num_faces, { semo::SEMO_MAX_INDEX, semo::SEMO_MAX_INDEX });
 			while (std::getline(file, line)) {
 				std::string asignToken;
 
@@ -215,7 +215,7 @@ namespace semo {
 						std::istringstream iss(line);
 						size_t tempint;
 						while (iss >> tempint) {
-							f2c[temp_num].push_back(tempint);
+							f2c[temp_num][0] = (tempint);
 							++temp_num;
 						}
 					}
@@ -251,7 +251,7 @@ namespace semo {
 						size_t tempint;
 						while (iss >> tempint) {
 							if (tempint < 0) break;
-							f2c[temp_num].push_back(tempint);
+							f2c[temp_num][1] = (tempint);
 							++temp_num;
 						}
 					}
@@ -333,8 +333,8 @@ namespace semo {
 							}
 						}
 						if (l == 0) {
-							bc_myProcNo.push_back(std::numeric_limits<size_t>::max());
-							bc_rightProcNo.push_back(std::numeric_limits<size_t>::max());
+							bc_myProcNo.push_back(semo::SEMO_MAX_INDEX);
+							bc_rightProcNo.push_back(semo::SEMO_MAX_INDEX);
 						}
 
 						startInput = false;
@@ -362,9 +362,9 @@ namespace semo {
 
     class Saver_openfoam {
     public:
-		std::vector<std::array<double, 3>>* pos_p{};
+		std::vector<semo::point3_t>* pos_p{};
 		std::vector<std::vector<size_t>>* f2v_p{};
-		std::vector<std::vector<size_t>>* f2c_p{};
+		std::vector<std::array<size_t, 2>>* f2c_p{};
 
 		std::vector<std::string>* bc_names_p{};
 		std::vector<std::size_t>* bc_nFaces_p{};
@@ -372,13 +372,13 @@ namespace semo {
 		std::vector<std::size_t>* bc_myProcNo_p{};
 		std::vector<std::size_t>* bc_rightProcNo_p{};
 
-		void set_pos(std::vector<std::array<double, 3>>* pos_p_in) {
+		void set_pos(std::vector<semo::point3_t>* pos_p_in) {
 			pos_p = pos_p_in;
 		}
 		void set_f2v(std::vector<std::vector<size_t>>* f2v_p_in) {
 			f2v_p = f2v_p_in;
 		}
-		void set_f2c(std::vector<std::vector<size_t>>* f2c_p_in) {
+		void set_f2c(std::vector<std::array<size_t, 2>>* f2c_p_in) {
 			f2c_p = f2c_p_in;
 		}
 		void set_bc_names(std::vector<std::string>* bc_names_in) {
@@ -399,7 +399,7 @@ namespace semo {
 
 
 
-		void load(std::string folder) {
+		void save(std::string folder) {
 
 			if (pos_p == nullptr) {
 				std::cout << "not set pos pointer" << std::endl;

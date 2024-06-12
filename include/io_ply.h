@@ -1,5 +1,6 @@
 #pragma once
 
+#include "common.h"
 #include "helper.h"
 
 namespace semo {
@@ -7,10 +8,10 @@ namespace semo {
     class Loader_ply {
     public:
 
-        std::vector<std::array<double, 3>>* pos_p{};
+        std::vector<semo::point3_t>* pos_p{};
         std::vector<std::vector<size_t>>* f2v_p{};
 
-        void set_pos(std::vector<std::array<double, 3>>* pos_p_in) {
+        void set_pos(std::vector<semo::point3_t>* pos_p_in) {
             pos_p = pos_p_in;
         }
         void set_f2v(std::vector<std::vector<size_t>>* f2v_p_in) {
@@ -202,10 +203,10 @@ namespace semo {
     class Saver_ply {
     public:
 
-        std::vector<std::array<double, 3>>* pos_p{};
+        std::vector<semo::point3_t>* pos_p{};
         std::vector<std::vector<size_t>>* f2v_p{};
 
-        void set_pos(std::vector<std::array<double, 3>>* pos_p_in) {
+        void set_pos(std::vector<semo::point3_t>* pos_p_in) {
             pos_p = pos_p_in;
         }
         void set_f2v(std::vector<std::vector<size_t>>* f2v_p_in) {

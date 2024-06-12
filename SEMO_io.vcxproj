@@ -104,7 +104,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./include;./3rdparty/tecio;C:\Program Files (x86)\VTK\include\vtk-9.2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;./3rdparty/tecio;C:\Program Files (x86)\VTK\include\vtk-9.2;D:\work\SEMO_Computational_Geometry\3rdparty;D:\work\SEMO_Common;D:\work\SEMO_Mesh_Type;D:\work\SEMO_Computational_Geometry\3rdparty\Eigen-3.4.0;D:\work\SEMO_Computational_Geometry\3rdparty\spdlog-1.14.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -122,7 +122,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./include;./3rdparty/tecio;C:\Program Files (x86)\VTK\include\vtk-9.2;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;./3rdparty/tecio;C:\Program Files (x86)\VTK\include\vtk-9.2;D:\work\SEMO_Computational_Geometry\3rdparty;D:\work\SEMO_Common;D:\work\SEMO_Mesh_Type;D:\work\SEMO_Computational_Geometry\3rdparty\Eigen-3.4.0;D:\work\SEMO_Computational_Geometry\3rdparty\spdlog-1.14.1\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
@@ -135,7 +135,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\helper.h" />
     <ClInclude Include="include\io_abaqus.h" />
     <ClInclude Include="include\io_ansys.h" />
     <ClInclude Include="include\io_cgns.h" />
@@ -149,7 +148,7 @@
     <ClInclude Include="include\io_tecplot.h" />
     <ClInclude Include="include\io_vtk.h" />
     <ClInclude Include="include\io_vtu.h" />
-    <ClInclude Include="include\semo_io.h" />
+    <ClInclude Include="include\mesh_io.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="tests\main_mesh_io_tests.cpp" />
